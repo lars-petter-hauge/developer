@@ -1,5 +1,6 @@
 ---
 title: Open Source Document
+collection: docs
 tags: ['Open Source']
 authors: ["eoaksnes"]
 ---

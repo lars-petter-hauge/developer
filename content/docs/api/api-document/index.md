@@ -1,5 +1,6 @@
 ---
 title: API Document
+collection: docs
 tags: ['API']
 authors: ["eoaksnes"]
 ---

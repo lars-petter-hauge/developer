@@ -1,5 +1,6 @@
 ---
 title: Security Document
+collection: docs
 tags: ['Security']
 authors: ["eoaksnes"]
 ---

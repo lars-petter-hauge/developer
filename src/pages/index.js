@@ -6,6 +6,7 @@ import Tags from '../components/TagListing';
 import {Grid, Col, Row} from 'react-styled-flexboxgrid';
 import NodeListing from '../components/NodeListing';
 import Card from '../ui/components/Card';
+import { Search } from '../components/SearchComponent'
 
 class Index extends React.Component {
     render() {
@@ -35,6 +36,7 @@ class Index extends React.Component {
                         "docs"
                     ]}
                 />
+                <Search lng="en" />
                 <Grid>
                     <Row>
                         <Col xs={12} md={8}>
