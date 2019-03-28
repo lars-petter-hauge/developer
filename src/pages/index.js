@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {graphql} from 'gatsby'
 import Layout from '../components/Layout'
 import SearchEngineOptimization from '../components/SearchEngineOptimization'
@@ -8,51 +8,62 @@ import NodeListing from '../components/NodeListing';
 import Card from '../ui/components/Card';
 import { Search } from '../components/SearchComponent'
 
-class Index extends React.Component {
-    render() {
-        const {
-            data,
-            location
-        } = this.props;
-
-        const {
-            title,
-            subTitle,
-            menuLinks
-        } = data.site.siteMetadata;
-
-        const docs = data.allMarkdownRemark.edges;
-        const tags = data.allMarkdownRemark.group;
-
-        return (
-            <Layout
-                location={location}
-                title={title}
-                subTitle={subTitle}
-                menuLinks={menuLinks}>
-                <SearchEngineOptimization
-                    title="All docs"
-                    keywords={[
-                        "docs"
-                    ]}
-                />
-                <Search lng="en" />
-                <Grid>
-                    <Row>
-                        <Col xs={12} md={8}>
-                            <NodeListing nodes={docs}/>
-                        </Col>
-                        <Col xs={12} md={4}>
-                            <Tags tags={tags}/>
-                        </Col>
-                    </Row>
-                </Grid>
-            </Layout>
-        )
-    }
+const Index = (props) => {
+    const [results, setResults] = useState([]);
+    const [query, setQuery] = useState('');
+    const {
+        data,
+        location
+    } = props;
+    
+    const {
+        title,
+        subTitle,
+        menuLinks
+    } = data.site.siteMetadata;
+    
+    const docs = data.allMarkdownRemark.edges;
+    const tags = data.allMarkdownRemark.group;
+    const docsFiltered = filterResults(results, query, docs);
+    return (
+        <Layout
+            location={location}
+            title={title}
+            subTitle={subTitle}
+            menuLinks={menuLinks}>
+            <SearchEngineOptimization
+                title="All docs"
+                keywords={[
+                    "docs"
+                ]}
+            />
+            <Search lng="en" setResults={setResults} setQuery={setQuery} />
+            <Grid>
+                <Row>
+                    <Col xs={12} md={8}>
+                        <NodeListing nodes={docsFiltered}/>
+                    </Col>
+                    <Col xs={12} md={4}>
+                        <Tags tags={tags}/>
+                    </Col>
+                </Row>
+            </Grid>
+        </Layout>
+    );
 }
 
 export default Index
+
+function filterResults(results, query, docs) {
+  if (results && query) {
+    const titles = results.map(result => result.title);
+    return docs.filter(doc => {
+      return titles.includes(doc.node.frontmatter.title)
+    });
+  } else {
+    return docs;
+  }
+}
 
 export const pageQuery = graphql`
   query {

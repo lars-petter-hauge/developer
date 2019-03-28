@@ -1,46 +1,31 @@
-import React, { Component } from 'react'
+import React  from 'react'
 
-export class Search extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      query: ``,
-      results: [],
-    }
-  }
+export const Search = (props) => {
+    const {setResults, setQuery, query, lng} = props;
   
-  render() {
-    return (
-      <div>
-        <input type="text" value={this.state.query} onChange={this.search}/>
-        <ul>{this.state.results.map((page, index) => <li key={'result' + index}>{page.title}</li>)}</ul>
-      </div>
-    )
-  }
-  
-  getSearchResults(query) {
+  function getSearchResults(query) {
     if (!query || !window.__LUNR__) return []
-    const lunrIndex = window.__LUNR__[this.props.lng]
-   
+    const lunrIndex = window.__LUNR__[lng]
+    
     const searchQuery = `+collection:docs ${query.trim()}~1`;
     const results = lunrIndex.index.search(searchQuery);
-
+    
     return results
       .filter(result => {
         console.log(result.score);
-        return result.score > 1;
+        return result.score > 0.1;
       })
       .map(({ ref }) => lunrIndex.store[ref])
   }
-  
-  search = event => {
-    const query = event.target.value
-    const results = this.getSearchResults(query)
-    this.setState(s => {
-      return {
-        results,
-        query,
-      }
-    })
-  }
+    
+    return (
+      <div>
+        <input type="text" value={query} onChange={() => {
+          const queryText = event.target.value;
+          setResults(getSearchResults(queryText));
+          setQuery(queryText);
+        }}/>
+      </div>
+    )
 }
+
